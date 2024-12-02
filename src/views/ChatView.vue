@@ -2,25 +2,24 @@
   <div class="common-layout">
     <el-container>
       <el-aside class="chat-sidebar">
-        <el-menu active-text-color="#ffd04b"  :default-active="'2-1'" :open="2" v-if="render"
-          class="chat-menu">
-          <el-menu-item index="1" @click="handleCreateConversation">
+        <el-menu active-text-color="#ffd04b" :default-active="'2-1'" :open="2" v-if="render" class="chat-menu">
+          <el-menu-item index="1" @click="handleCreateConversation" :disabled="isLoading">
             <template #title>
               <el-icon>
                 <Plus />
               </el-icon>
-              <el-button type="text" style="font-size: 20px;" >创建新会话</el-button>
+              <el-button type="text" style="font-size: 20px;" :disabled="isLoading">创建新会话</el-button>
             </template>
           </el-menu-item>
-          <el-sub-menu index="2" >
+          <el-sub-menu index="2">
             <template #title>
               <el-icon>
                 <ChatLineSquare />
               </el-icon>
               <span style="font-size: 20px;">最近会话</span>
             </template>
-            <el-menu-item v-for="(item, index) in chatWindowList.slice().reverse()" :key="item.conversation_id" :index="`2-${index + 1}`"
-              @click="currentConversation = item.conversation_id">{{
+            <el-menu-item v-for="(item, index) in chatWindowList.slice().reverse()" :key="item.conversation_id"
+              :index="`2-${index + 1}`" @click="currentConversation = item.conversation_id" :disabled="isLoading">{{
                 recentConversation(item) }}</el-menu-item>
           </el-sub-menu>
         </el-menu>
@@ -38,7 +37,7 @@
         </el-header>
         <el-main style="padding: 0;">
           <ChatWindow :chatWindowMessages="chatWindowMessages" :currentConversation="currentConversation"
-            @updateChatMessages="updateChatMessages" />
+            @updateChatMessages="updateChatMessages" @isLoading="handleIsLoading"/>
         </el-main>
       </el-container>
     </el-container>
@@ -64,6 +63,7 @@ export default {
       chatWindowMessages: [],
       isCreatingConversation: false,
       render: true,
+      isLoading: false,
     };
   },
   components: {
@@ -83,6 +83,9 @@ export default {
     },
   },
   methods: {
+    handleIsLoading(isLoading) {
+      this.isLoading = isLoading;
+    },
     shouldRerender() {
       this.render = false;
       this.$nextTick(() => {
@@ -133,9 +136,9 @@ export default {
       });
       return v.id;
     },
-    updateChatMessages(chatMessages) {
+    updateChatMessages(chatMessages, conversationId) {
       this.isCreatingConversation = false;
-      const index = this.chatWindowList.findIndex(item => item.conversation_id === this.currentConversation);
+      const index = this.chatWindowList.findIndex(item => item.conversation_id === conversationId);
       if (index !== -1) {
         this.chatWindowList[index].ChatMessages = chatMessages;
         localStorage.setItem('chatWindowList', JSON.stringify(this.chatWindowList));

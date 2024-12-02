@@ -7,8 +7,8 @@
         <div :class="isSearch ? 'chat-messages-search' : 'chat-messages'" ref="chatMessagesContainer">
             <div v-for="(msg, index) in chatMessages" :key="index">
                 <ChatMessage :isSearch="isSearch" :message="msg.content" :isUserMessage="msg.isUserMessage"
-                    :fileUrl="msg.fileUrl || ''" :isImage="msg.isImage || false" :isLoading="isLoading"
-                    :isNew="index === chatMessages.length - 1" />
+                    :fileUrl="msg.fileUrl || ''" :isImage="msg.isImage || false" :isLoading="msg.isLoading"
+             />
             </div>
         </div>
         <ChatInput v-if="!isSearch" @send="handleSendMessage" @upload="handleFileID" @remove="handleRemove"
@@ -63,7 +63,6 @@ export default {
             fileID: '',
             fileUrl: '',
             isImage: false,
-            isLoading: true,
         };
     },
     methods: {
@@ -138,14 +137,12 @@ export default {
                 conversation_id: this.isSearch ? '' : this.conversation_id,
             });
 
-            this.chatMessages.push({ content: '', isUserMessage: false });
+            this.chatMessages.push({ content: '', isUserMessage: false, isLoading: true });
+            this.$emit('isLoading', this.chatMessages[this.chatMessages.length - 1].isLoading);
             for await (const part of v) {
                 console.log(part);
-                if (part.event === ChatEventType.CONVERSATION_CHAT_IN_PROGRESS) {
-                    this.isLoading = true;
-                }
                 if (part.event === ChatEventType.CONVERSATION_MESSAGE_DELTA) {
-                    this.isLoading = false;
+    
                     this.chatMessages[this.chatMessages.length - 1].content += part.data.content.replace(/\[/, '![');
                     this.conversation_id = part.data.conversation_id;
                     this.scrollToBottom();
@@ -154,13 +151,17 @@ export default {
                     console.error('Chat failed');
                 }
                 if (part.event === ChatEventType.CONVERSATION_CHAT_COMPLETED) {
+                    this.chatMessages[this.chatMessages.length - 1].isLoading = false;
+                    this.$emit('updateChatMessages', this.chatMessages, this.conversation_id);
+                    this.$emit('isLoading', this.chatMessages[this.chatMessages.length - 1].isLoading);
                     console.log('Chat completed');
+                    
                 }
                 if (part.event === ChatEventType.ERROR) {
                     console.error(part.error);
                 }
             }
-            this.$emit('updateChatMessages', this.chatMessages);
+
         },
 
 

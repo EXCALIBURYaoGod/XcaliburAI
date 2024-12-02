@@ -17,7 +17,7 @@ const client = new CozeAPI({
 
 const app = createApp(App);
 app.directive('highlight', function (el) {
-    const blocks = el.querySelectorAll('pre code');
+    const blocks = el.querySelectorAll('pre');
     blocks.forEach((block: any) => {
         hljs.highlightBlock(block);
         block.classList.add('hljs'); // 添加hljs类名，以便样式控制

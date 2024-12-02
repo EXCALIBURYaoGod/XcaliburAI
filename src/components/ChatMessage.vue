@@ -2,7 +2,7 @@
     <div class="message-container"
         :class="{ 'user-message': isUserMessage, 'ai-message': !isUserMessage, 'isSearch': isSearch }">
         <div class="message-content">
-            <el-icon v-if="isLoading && isNew" class="is-loading">
+            <el-icon v-if="isLoading" class="is-loading">
                 <Loading />
             </el-icon>
             <div v-highlight>
@@ -34,10 +34,6 @@ export default {
             default: '',
         },
         isLoading: {
-            type: Boolean,
-            default: true,
-        },
-        isNew: {
             type: Boolean,
             default: false,
         },
