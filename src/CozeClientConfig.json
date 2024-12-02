@@ -1,0 +1,6 @@
+{
+    "token": "这里填写Coze.cn的个人token",
+    "allowPersonalAccessTokenInBrowser": "true",
+    "baseURL": "COZE_CN_BASE_URL"
+}
+  
