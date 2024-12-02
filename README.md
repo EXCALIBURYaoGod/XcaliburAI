@@ -4,7 +4,7 @@
 
 本次青训营的前端项目就是要求我们设计一个LLM对话框。本项目基于以上情景，借着青训营提供的宝贵机会进行了开发和探索，这个项目对我个人的技术成长追求也是一大帮助。项目还有很多功能和bug没有完善，后面我会一直维护它，也欢迎大家找我一起交流。
 
-技术栈：Vue2、Coze API、Element-plus、Vite、hljs、markdown-it等
+技术栈：Vue3、Coze API、Element-plus、Vite、hljs、markdown-it等
 
 
 ## 核心功能
